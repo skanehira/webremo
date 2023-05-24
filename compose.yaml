@@ -1,0 +1,7 @@
+services:
+  nature_remo_mock_api:
+    image: stoplight/prism:5
+    container_name: nature_remo_mock_api
+    ports:
+      - 4010:4010
+    command: ["mock", "-h", "0.0.0.0", "https://swagger.nature.global/swagger.json"]
