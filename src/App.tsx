@@ -4,7 +4,6 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import './App.css';
 
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
