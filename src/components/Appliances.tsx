@@ -5,10 +5,8 @@ import LightbulbOutlinedIcon from "@mui/icons-material/LightbulbOutlined";
 import TvOutlinedIcon from "@mui/icons-material/TvOutlined";
 import AdUnitsOutlinedIcon from "@mui/icons-material/AdUnitsOutlined";
 import HeatPumpOutlinedIcon from "@mui/icons-material/HeatPumpOutlined"; // AirCon
-
-type Props = {
-  apps: Appliance[];
-};
+import { useEffect, useRef, useState } from "react";
+import { getAppliances } from "../apis/client";
 
 function getIcon(appType: string) {
   switch (appType) {
@@ -23,7 +21,23 @@ function getIcon(appType: string) {
   }
 }
 
-export default function Appliances({ apps }: Props) {
+export default function Appliances() {
+  const [apps, setApps] = useState<Appliance[]>([]);
+
+  const once = useRef(false);
+  useEffect(() => {
+    if (import.meta.env.MODE === "development") {
+      if (once.current) {
+        return;
+      }
+      once.current = true;
+    }
+    (async () => {
+      const apps = await getAppliances();
+      setApps(apps);
+    })();
+  }, []);
+
   return (
     <Box sx={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
       {apps.map((app) => {

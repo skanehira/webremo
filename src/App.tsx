@@ -4,30 +4,18 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-
-import { getAppliances } from "./apis/client";
-import { useEffect, useRef, useState } from "react";
-import { type Appliance } from "nature-remo";
 import Appliances from "./components/Appliances";
+import Devices from "./components/Devices";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import NotFound from "./components/NotFound";
 
 export default function App() {
-  const [apps, setApps] = useState<Appliance[]>([]);
+  const navigate = useNavigate();
 
-  const once = useRef(false);
-  useEffect(() => {
-    if (import.meta.env.MODE === "development") {
-      if (once.current) {
-        return;
-      }
-      once.current = true;
-    }
-    (async () => {
-      const apps = await getAppliances();
-      setApps(apps);
-    })();
-  }, []);
-
-  const navItems = ["Device", "Appliance"];
+  const navItems = [
+    { name: "Appliances", path: "/" },
+    { name: "Devices", path: "/devices" },
+  ];
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -39,8 +27,14 @@ export default function App() {
           </Typography>
           <Box>
             {navItems.map((item) => (
-              <Button key={item} sx={{ color: "#fff" }}>
-                {item}
+              <Button
+                key={item.name}
+                sx={{ color: "#fff" }}
+                onClick={() => {
+                  navigate(item.path);
+                }}
+              >
+                {item.name}
               </Button>
             ))}
           </Box>
@@ -48,7 +42,13 @@ export default function App() {
       </AppBar>
       <Box component="main" sx={{ p: 3 }}>
         <Toolbar />
-        <Appliances apps={apps} />
+        <Routes>
+          <Route path="/">
+            <Route path="" element={<Appliances />}></Route>
+            <Route path="devices" element={<Devices />}></Route>
+            <Route path="*" element={<NotFound />}></Route>
+          </Route>
+        </Routes>
       </Box>
     </Box>
   );
