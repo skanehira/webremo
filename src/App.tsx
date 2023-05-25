@@ -5,52 +5,10 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 
-import Card from "@mui/material/Card";
-import CardHeader from "@mui/material/CardHeader";
-import LightbulbOutlinedIcon from "@mui/icons-material/LightbulbOutlined";
-import TvOutlinedIcon from "@mui/icons-material/TvOutlined";
-import AdUnitsOutlinedIcon from "@mui/icons-material/AdUnitsOutlined";
-import HeatPumpOutlinedIcon from "@mui/icons-material/HeatPumpOutlined"; // AirCon
 import { getAppliances } from "./apis/client";
 import { useEffect, useRef, useState } from "react";
 import { Appliance } from "nature-remo";
-
-function DeviceCard({ title, appType }: { title: string; appType: string }) {
-  let icon = <AdUnitsOutlinedIcon />;
-
-  switch (appType) {
-    case "LIGHT":
-      icon = <LightbulbOutlinedIcon />;
-      break;
-    case "TV":
-      icon = <TvOutlinedIcon />;
-      break;
-    case "AC":
-      icon = <HeatPumpOutlinedIcon />;
-      break;
-  }
-
-  return (
-    <Card
-      className="card"
-      sx={{
-        minWidth: 230,
-        maxWidth: 230,
-        m: 1,
-        transition: "0.3s",
-        "&:hover": {
-          boxShadow: "0 16px 70px -12.125px rgba(0,0,0,0.3)",
-          border: "1px solid rgba(0, 0, 0, 0.3)",
-        },
-      }}
-      onClick={() => {
-        console.log("todo: implement");
-      }}
-    >
-      <CardHeader avatar={icon} title={title} subheader={appType} />
-    </Card>
-  );
-}
+import Appliances from "./components/Appliances";
 
 export default function App() {
   const [apps, setApps] = useState([] as Appliance[]);
@@ -69,7 +27,7 @@ export default function App() {
     })();
   }, []);
 
-  const navItems = ["About"];
+  const navItems = ["Device", "Appliance"];
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -90,17 +48,7 @@ export default function App() {
       </AppBar>
       <Box component="main" sx={{ p: 3 }}>
         <Toolbar />
-        <Box sx={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
-          {apps.map((app) => {
-            return (
-              <DeviceCard
-                key={app.id}
-                title={app.nickname}
-                appType={app.type}
-              />
-            );
-          })}
-        </Box>
+        <Appliances apps={apps} />
       </Box>
     </Box>
   );
