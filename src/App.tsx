@@ -7,11 +7,11 @@ import Button from "@mui/material/Button";
 
 import { getAppliances } from "./apis/client";
 import { useEffect, useRef, useState } from "react";
-import { Appliance } from "nature-remo";
+import { type Appliance } from "nature-remo";
 import Appliances from "./components/Appliances";
 
 export default function App() {
-  const [apps, setApps] = useState([] as Appliance[]);
+  const [apps, setApps] = useState<Appliance[]>([]);
 
   const once = useRef(false);
   useEffect(() => {
