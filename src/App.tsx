@@ -8,14 +8,23 @@ import Appliances from "./components/Appliances";
 import Devices from "./components/Devices";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import NotFound from "./components/NotFound";
+import LinearProgress from "@mui/material/LinearProgress";
+import { useState } from "react";
 
 export default function App() {
+  console.log("App");
+  const [isLoading, setIsLoading] = useState(false);
+
   const navigate = useNavigate();
 
   const navItems = [
     { name: "Appliances", path: "/" },
     { name: "Devices", path: "/devices" },
   ];
+
+  const changeIsLoading = (loading: boolean) => {
+    setIsLoading(loading);
+  };
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -39,13 +48,22 @@ export default function App() {
             ))}
           </Box>
         </Toolbar>
+        <Box sx={{ width: "100%" }}>
+          {isLoading ? <LinearProgress></LinearProgress> : null}
+        </Box>
       </AppBar>
       <Box component="main" sx={{ p: 3 }}>
         <Toolbar />
         <Routes>
           <Route path="/">
-            <Route path="" element={<Appliances />}></Route>
-            <Route path="devices" element={<Devices />}></Route>
+            <Route
+              path=""
+              element={<Appliances setIsLoading={changeIsLoading} />}
+            ></Route>
+            <Route
+              path="devices"
+              element={<Devices setIsLoading={changeIsLoading} />}
+            ></Route>
             <Route path="*" element={<NotFound />}></Route>
           </Route>
         </Routes>

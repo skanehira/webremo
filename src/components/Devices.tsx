@@ -4,7 +4,12 @@ import CustomCard from "./CustomCard";
 import { useEffect, useRef, useState } from "react";
 import { getDevices } from "../apis/client";
 
-export default function Devices() {
+type Props = {
+  setIsLoading: (loading: boolean) => void;
+};
+
+export default function Devices({ setIsLoading }: Props) {
+  console.log("Devices");
   const [devices, setDevices] = useState<Device[]>([]);
 
   const once = useRef(false);
@@ -17,10 +22,14 @@ export default function Devices() {
       once.current = true;
     }
     (async () => {
+      setIsLoading(true);
       const devices = await getDevices();
-      setDevices(devices);
+      setTimeout(() => {
+        setIsLoading(false);
+        setDevices(devices);
+      }, 1000);
     })();
-  });
+  }, [setIsLoading]);
 
   return (
     <Box sx={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>

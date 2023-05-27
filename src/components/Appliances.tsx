@@ -21,7 +21,12 @@ function getIcon(appType: string) {
   }
 }
 
-export default function Appliances() {
+type Props = {
+  setIsLoading: (loading: boolean) => void;
+};
+
+export default function Appliances({ setIsLoading }: Props) {
+  console.log("Appliances");
   const [apps, setApps] = useState<Appliance[]>([]);
 
   const once = useRef(false);
@@ -33,10 +38,15 @@ export default function Appliances() {
       once.current = true;
     }
     (async () => {
+      setIsLoading(true);
       const apps = await getAppliances();
-      setApps(apps);
+      // 擬似的にローディングを再現するため
+      setTimeout(() => {
+        setApps(apps);
+        setIsLoading(false);
+      }, 1000);
     })();
-  }, []);
+  }, [setIsLoading]);
 
   return (
     <Box sx={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
@@ -48,7 +58,7 @@ export default function Appliances() {
             title={app.nickname}
             subTitle={app.type}
             onClick={() => {
-              // TODO: open detail windows
+              // TODO: open form
               console.log("clicked");
             }}
           />
