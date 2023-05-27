@@ -3,16 +3,15 @@ import { type Device } from "nature-remo";
 import CustomCard from "./CustomCard";
 import { useEffect, useRef, useState } from "react";
 import { getDevices } from "../apis/client";
+import { useDispatch } from "react-redux";
+import { setLoading } from "../stores/loader";
 
-type Props = {
-  setIsLoading: (loading: boolean) => void;
-};
+export default function Devices() {
+  const dispatch = useDispatch();
 
-export default function Devices({ setIsLoading }: Props) {
   const [devices, setDevices] = useState<Device[]>([]);
 
   const once = useRef(false);
-
   useEffect(() => {
     if (import.meta.env.MODE === "development") {
       if (once.current) {
@@ -21,14 +20,14 @@ export default function Devices({ setIsLoading }: Props) {
       once.current = true;
     }
     (async () => {
-      setIsLoading(true);
+      dispatch(setLoading(true));
       const devices = await getDevices();
       setTimeout(() => {
-        setIsLoading(false);
+        dispatch(setLoading(false));
         setDevices(devices);
       }, 1000);
     })();
-  }, [setIsLoading]);
+  }, [dispatch]);
 
   return (
     <Box sx={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>

@@ -7,6 +7,8 @@ import AdUnitsOutlinedIcon from "@mui/icons-material/AdUnitsOutlined";
 import HeatPumpOutlinedIcon from "@mui/icons-material/HeatPumpOutlined"; // AirCon
 import { useEffect, useRef, useState } from "react";
 import { getAppliances } from "../apis/client";
+import { useDispatch } from "react-redux";
+import { setLoading } from "../stores/loader";
 
 function getIcon(appType: string) {
   switch (appType) {
@@ -21,11 +23,9 @@ function getIcon(appType: string) {
   }
 }
 
-type Props = {
-  setIsLoading: (loading: boolean) => void;
-};
+export default function Appliances() {
+  const dispatch = useDispatch();
 
-export default function Appliances({ setIsLoading }: Props) {
   const [apps, setApps] = useState<Appliance[]>([]);
 
   const once = useRef(false);
@@ -37,15 +37,15 @@ export default function Appliances({ setIsLoading }: Props) {
       once.current = true;
     }
     (async () => {
-      setIsLoading(true);
+      dispatch(setLoading(true));
       const apps = await getAppliances();
       // 擬似的にローディングを再現するため
       setTimeout(() => {
         setApps(apps);
-        setIsLoading(false);
+        dispatch(setLoading(false));
       }, 1000);
     })();
-  }, [setIsLoading]);
+  }, [dispatch]);
 
   return (
     <Box sx={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
