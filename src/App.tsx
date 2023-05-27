@@ -9,10 +9,9 @@ import Devices from "./components/Devices";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import NotFound from "./components/NotFound";
 import LinearProgress from "@mui/material/LinearProgress";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 export default function App() {
-  console.log("App");
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -22,9 +21,9 @@ export default function App() {
     { name: "Devices", path: "/devices" },
   ];
 
-  const changeIsLoading = (loading: boolean) => {
+  const handleIsLoading = useCallback((loading: boolean) => {
     setIsLoading(loading);
-  };
+  }, []);
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -58,11 +57,11 @@ export default function App() {
           <Route path="/">
             <Route
               path=""
-              element={<Appliances setIsLoading={changeIsLoading} />}
+              element={<Appliances setIsLoading={handleIsLoading} />}
             ></Route>
             <Route
               path="devices"
-              element={<Devices setIsLoading={changeIsLoading} />}
+              element={<Devices setIsLoading={handleIsLoading} />}
             ></Route>
             <Route path="*" element={<NotFound />}></Route>
           </Route>
