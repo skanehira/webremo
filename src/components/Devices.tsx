@@ -9,7 +9,6 @@ type Props = {
 };
 
 export default function Devices({ setIsLoading }: Props) {
-  console.log("Devices");
   const [devices, setDevices] = useState<Device[]>([]);
 
   const once = useRef(false);

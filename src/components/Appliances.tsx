@@ -26,7 +26,6 @@ type Props = {
 };
 
 export default function Appliances({ setIsLoading }: Props) {
-  console.log("Appliances");
   const [apps, setApps] = useState<Appliance[]>([]);
 
   const once = useRef(false);
