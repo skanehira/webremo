@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 import { getDevices } from "../apis/client";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../stores/loader";
-import { DeviceState, setDevices } from "../stores/devices";
+import { DeviceState, selectDevice, setDevices } from "../stores/devices";
 
 export default function Devices() {
   const dispatch = useDispatch();
@@ -41,6 +41,10 @@ export default function Devices() {
             key={dev.id}
             title={dev.name}
             subTitle={dev.firmware_version}
+            onClick={() => {
+              dispatch(selectDevice(dev.id));
+              // TODO: open form
+            }}
           />
         );
       })}
