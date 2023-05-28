@@ -5,10 +5,11 @@ import LightbulbOutlinedIcon from "@mui/icons-material/LightbulbOutlined";
 import TvOutlinedIcon from "@mui/icons-material/TvOutlined";
 import AdUnitsOutlinedIcon from "@mui/icons-material/AdUnitsOutlined";
 import HeatPumpOutlinedIcon from "@mui/icons-material/HeatPumpOutlined"; // AirCon
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { getAppliances } from "../apis/client";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../stores/loader";
+import { AppState, setApps, selectApp } from "../stores/apps";
 
 function getIcon(appType: string) {
   switch (appType) {
@@ -24,12 +25,17 @@ function getIcon(appType: string) {
 }
 
 export default function Appliances() {
+  const apps = useSelector<{ app: AppState }, Appliance[]>((state) => {
+    return state.app.apps;
+  });
   const dispatch = useDispatch();
 
-  const [apps, setApps] = useState<Appliance[]>([]);
-
+  // TODO: refactor
   const once = useRef(false);
   useEffect(() => {
+    if (apps.length > 0) {
+      return;
+    }
     if (import.meta.env.MODE === "development") {
       if (once.current) {
         return;
@@ -39,13 +45,10 @@ export default function Appliances() {
     (async () => {
       dispatch(setLoading(true));
       const apps = await getAppliances();
-      // 擬似的にローディングを再現するため
-      setTimeout(() => {
-        setApps(apps);
-        dispatch(setLoading(false));
-      }, 1000);
+      dispatch(setApps(apps));
+      dispatch(setLoading(false));
     })();
-  }, [dispatch]);
+  }, [dispatch, apps]);
 
   return (
     <Box sx={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
@@ -57,8 +60,8 @@ export default function Appliances() {
             title={app.nickname}
             subTitle={app.type}
             onClick={() => {
+              dispatch(selectApp(app.id));
               // TODO: open form
-              console.log("clicked");
             }}
           />
         );

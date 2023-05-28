@@ -1,18 +1,24 @@
 import Box from "@mui/material/Box";
 import { type Device } from "nature-remo";
 import CustomCard from "./CustomCard";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { getDevices } from "../apis/client";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../stores/loader";
+import { DeviceState, setDevices } from "../stores/devices";
 
 export default function Devices() {
   const dispatch = useDispatch();
 
-  const [devices, setDevices] = useState<Device[]>([]);
+  const devices = useSelector<{ device: DeviceState }, Device[]>((state) => {
+    return state.device.devices;
+  });
 
   const once = useRef(false);
   useEffect(() => {
+    if (devices.length > 0) {
+      return;
+    }
     if (import.meta.env.MODE === "development") {
       if (once.current) {
         return;
@@ -22,12 +28,10 @@ export default function Devices() {
     (async () => {
       dispatch(setLoading(true));
       const devices = await getDevices();
-      setTimeout(() => {
-        dispatch(setLoading(false));
-        setDevices(devices);
-      }, 1000);
+      dispatch(setLoading(false));
+      dispatch(setDevices(devices));
     })();
-  }, [dispatch]);
+  }, [dispatch, devices]);
 
   return (
     <Box sx={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
