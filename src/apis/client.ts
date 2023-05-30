@@ -1,15 +1,42 @@
 import type { Appliance, Device } from "nature-remo";
 
-const ENDPOINT = import.meta.env.VITE_ENDPOINT ?? "https://api.nature.global";
-
-const AuthnHeader = {
-  headers: {
-    Authorization: `Bearer ${import.meta.env.VITE_TOKEN ?? "foo"}`,
-  },
+type Headers = {
+  [key: string]: string;
 };
 
+class Client {
+  endpoint: string;
+  headers: Headers;
+
+  constructor() {
+    this.endpoint =
+      import.meta.env.VITE_ENDPOINT ?? "https://api.nature.global";
+    this.headers = {
+      Authorization: `Bearer ${import.meta.env.VITE_TOKEN ?? "foo"}`,
+    };
+  }
+
+  fetch(path: string, init?: RequestInit) {
+    if (init?.headers) {
+      Object.assign(init.headers, this.headers);
+    }
+    return fetch(`${this.endpoint}/${path}`, {
+      headers: this.headers,
+      ...init,
+    });
+  }
+
+  get(path: string) {
+    return fetch(`${this.endpoint}/${path}`, {
+      headers: this.headers,
+    });
+  }
+}
+
+export const client = new Client();
+
 export async function getAppliances(): Promise<Appliance[]> {
-  const resp = await fetch(ENDPOINT + "/appliances", AuthnHeader);
+  const resp = await client.get("appliances");
 
   if (resp.status !== 200) {
     throw new Error(await resp.text());
@@ -24,7 +51,7 @@ export async function getAppliances(): Promise<Appliance[]> {
 }
 
 export async function getDevices(): Promise<Device[]> {
-  const resp = await fetch(ENDPOINT + "/devices", AuthnHeader);
+  const resp = await client.get("devices");
 
   if (resp.status !== 200) {
     throw new Error(await resp.text());

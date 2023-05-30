@@ -25,7 +25,7 @@ export default function AirConForm({ aircon, settings }: Props) {
   const [temp, setTemp] = useState(settings.temp);
   const [volume, setVolume] = useState(settings.vol);
 
-  const modes = Object.entries(aircon.range.modes).map(([key, _value]) => {
+  const modes = Object.keys(aircon.range.modes).map((key) => {
     return (
       <MenuItem key={key} value={key}>
         {key}
