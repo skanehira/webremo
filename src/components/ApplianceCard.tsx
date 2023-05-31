@@ -42,7 +42,7 @@ export default function ApplianceCard({ app }: Props) {
           setOpen(true);
         }}
       />
-      <CardForm open={open} setOpen={setOpen} />
+      {open && <CardForm open={open} setOpen={setOpen} />}
     </>
   );
 }
