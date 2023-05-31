@@ -15,4 +15,3 @@ export async function sendButton(id: string, button: string) {
 
   return resp.json();
 }
-

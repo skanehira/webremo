@@ -16,6 +16,7 @@ export default function LightForm({ id, light }: Props) {
     },
     [id]
   );
+
   return (
     <>
       {light.buttons.map((button) => (
