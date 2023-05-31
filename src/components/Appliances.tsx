@@ -1,6 +1,6 @@
 import { type Appliance } from "nature-remo";
 import { useEffect, useRef } from "react";
-import { getAppliances } from "../apis/client";
+import { getAppliances } from "../apis/appliance";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../stores/loader";
 import { AppState, setApps } from "../stores/apps";
