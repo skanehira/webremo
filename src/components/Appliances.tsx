@@ -26,9 +26,12 @@ export default function Appliances() {
     }
     (async () => {
       dispatch(setLoading(true));
-      const apps = await getAppliances();
-      dispatch(setApps(apps));
-      dispatch(setLoading(false));
+      try {
+        const apps = await getAppliances();
+        dispatch(setApps(apps));
+      } finally {
+        dispatch(setLoading(false));
+      }
     })();
   }, [dispatch, apps]);
 

@@ -27,9 +27,12 @@ export default function Devices() {
     }
     (async () => {
       dispatch(setLoading(true));
-      const devices = await getDevices();
-      dispatch(setLoading(false));
-      dispatch(setDevices(devices));
+      try {
+        const devices = await getDevices();
+        dispatch(setDevices(devices));
+      } finally {
+        dispatch(setLoading(false));
+      }
     })();
   }, [dispatch, devices]);
 
