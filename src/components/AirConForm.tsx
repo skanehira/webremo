@@ -33,6 +33,12 @@ export default function AirConForm({ id }: Props) {
   const aircon = app.aircon!;
   const settings = app.settings!;
   const mode = settings.mode;
+  const temps = [...aircon.range.modes[mode].temp];
+  // NOTE: current temp maybe invalid value, so should add it to temps
+  if (!temps.some((temp) => temp === settings.temp)) {
+    temps.push(settings.temp);
+    temps.sort();
+  }
 
   const handlePower = (event: SelectChangeEvent) => {
     const value = event.target.value as string;
@@ -143,7 +149,7 @@ export default function AirConForm({ id }: Props) {
             label="Temperatures"
             onChange={hanldeTemp}
           >
-            {aircon.range.modes[mode].temp.map((temp, index) => {
+            {temps.map((temp, index) => {
               return (
                 <MenuItem key={index} value={temp}>
                   {temp}
