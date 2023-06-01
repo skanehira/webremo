@@ -8,9 +8,6 @@ export async function getAppliances(): Promise<Appliance[]> {
     throw new Error(await resp.text());
   }
 
-  // INFO: 500ms delay to show loading indicator
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
   // TODO: use zod to validate response body
   const apps = await resp.json();
   return apps;
