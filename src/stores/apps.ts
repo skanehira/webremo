@@ -1,5 +1,10 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import { type Appliance } from "nature-remo";
+import { AirconSettingsWithTimestamp, type Appliance } from "nature-remo";
+
+export type UpdateAirconPayload = {
+  id: string;
+  settings: AirconSettingsWithTimestamp;
+};
 
 export interface AppState {
   apps: Appliance[];
@@ -23,8 +28,15 @@ export const appSlice = createSlice({
         state.selectedId = app.id;
       }
     },
+    updateAirconSettings: (
+      state,
+      action: PayloadAction<UpdateAirconPayload>
+    ) => {
+      const idx = state.apps.findIndex((app) => app.id === action.payload.id);
+      state.apps[idx].settings = action.payload.settings;
+    },
   },
 });
 
-export const { setApps, selectApp } = appSlice.actions;
+export const { setApps, selectApp, updateAirconSettings } = appSlice.actions;
 export default appSlice.reducer;

@@ -5,76 +5,78 @@ import {
   Select,
   SelectChangeEvent,
 } from "@mui/material";
-import type {
-  AirconSettingsWithTimestamp,
-  Aircon,
-  AirconModeType,
-} from "nature-remo";
-import { useState } from "react";
+import type { AirconModeType, Appliance } from "nature-remo";
+import { AppState, updateAirconSettings } from "../stores/apps";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  toUpdateSettings,
+  updateAirconSettings as updateAircon,
+} from "../apis/aircon";
 
 type Props = {
-  aircon: Aircon;
-  settings: AirconSettingsWithTimestamp;
+  id: string;
 };
 
-export default function AirConForm({ aircon, settings }: Props) {
-  // TODO: update value of store
-  const [power, setPower] = useState("ON");
-  const [mode, setMode] = useState(settings.mode);
-  const [direction, setDirection] = useState(settings.dir);
-  const [temp, setTemp] = useState(settings.temp);
-  const [volume, setVolume] = useState(settings.vol);
+export default function AirConForm({ id }: Props) {
+  const dispatch = useDispatch();
 
-  const modes = Object.keys(aircon.range.modes).map((key) => {
-    return (
-      <MenuItem key={key} value={key}>
-        {key}
-      </MenuItem>
-    );
+  const app = useSelector<{ app: AppState }, Appliance | undefined>((state) => {
+    if (state.app.selectedId) {
+      return state.app.apps.find((app) => app.id === state.app.selectedId);
+    }
   });
 
-  const directions = aircon.range.modes[mode].dir.map((dir, index) => {
-    return (
-      <MenuItem key={index} value={dir}>
-        {dir}
-      </MenuItem>
-    );
-  });
+  if (!app) {
+    return null;
+  }
 
-  const temps = aircon.range.modes[mode].temp.map((temp, index) => {
-    return (
-      <MenuItem key={index} value={temp}>
-        {temp}
-      </MenuItem>
-    );
-  });
-
-  const volumes = aircon.range.modes[mode].vol.map((vol, index) => {
-    return (
-      <MenuItem key={index} value={vol}>
-        {vol}
-      </MenuItem>
-    );
-  });
+  const aircon = app.aircon!;
+  const settings = app.settings!;
+  const mode = settings.mode;
 
   const handlePower = (event: SelectChangeEvent) => {
-    setPower(event.target.value as string);
+    const value = event.target.value as string;
+    let button = ""; // empty is power on
+    if (value !== "ON") {
+      button = "power-off";
+    }
+    // NOTE: clone settings because settings is immutable
+    const newSettings = { ...settings, button };
+    updateAircon(id, toUpdateSettings(newSettings)).then(() => {
+      dispatch(updateAirconSettings({ id, settings: newSettings }));
+    });
   };
 
   const handleMode = (event: SelectChangeEvent) => {
-    setMode(event.target.value as AirconModeType);
+    const mode = event.target.value as AirconModeType;
+    const newSettings = { ...settings, mode };
+    updateAircon(id, toUpdateSettings(newSettings)).then(() => {
+      dispatch(updateAirconSettings({ id, settings: newSettings }));
+    });
   };
 
   const handleDirection = (event: SelectChangeEvent) => {
-    setDirection(event.target.value as string);
+    const dir = event.target.value as string;
+    const newSettings = { ...settings, dir };
+    updateAircon(id, toUpdateSettings(newSettings)).then(() => {
+      dispatch(updateAirconSettings({ id, settings: newSettings }));
+    });
   };
 
   const hanldeTemp = (event: SelectChangeEvent) => {
-    setTemp(event.target.value as string);
+    const temp = event.target.value as string;
+    const newSettings = { ...settings, temp };
+    updateAircon(id, toUpdateSettings(newSettings)).then(() => {
+      dispatch(updateAirconSettings({ id, settings: newSettings }));
+    });
   };
 
   const hanldeVolume = (event: SelectChangeEvent) => {
-    setVolume(event.target.value as string);
+    const vol = event.target.value as string;
+    const newSettings = { ...settings, vol };
+    updateAircon(id, toUpdateSettings(newSettings)).then(() => {
+      dispatch(updateAirconSettings({ id, settings: newSettings }));
+    });
   };
 
   return (
@@ -84,7 +86,7 @@ export default function AirConForm({ aircon, settings }: Props) {
         <Select
           labelId="power"
           id="power"
-          value={power}
+          value={settings.button === "" ? "ON" : "OFF"}
           label="Power"
           onChange={handlePower}
         >
@@ -102,7 +104,13 @@ export default function AirConForm({ aircon, settings }: Props) {
           label="Modes"
           onChange={handleMode}
         >
-          {modes}
+          {Object.keys(aircon.range.modes).map((key) => {
+            return (
+              <MenuItem key={key} value={key}>
+                {key}
+              </MenuItem>
+            );
+          })}
         </Select>
       </Grid>
 
@@ -111,43 +119,61 @@ export default function AirConForm({ aircon, settings }: Props) {
         <Select
           labelId="directions"
           id="directions"
-          value={direction}
+          value={settings.dir}
           label="Modes"
           onChange={handleDirection}
         >
-          {directions}
+          {aircon.range.modes[mode].dir.map((dir, index) => {
+            return (
+              <MenuItem key={index} value={dir}>
+                {dir}
+              </MenuItem>
+            );
+          })}
         </Select>
       </Grid>
 
-      {mode === "cool" || mode === "warm" || mode === "dry" ? (
+      {(mode === "cool" || mode === "warm" || mode === "dry") && (
         <Grid item xs={6}>
           <InputLabel id="temps">Temp</InputLabel>
           <Select
             labelId="temps"
             id="temps"
-            value={temp}
+            value={settings.temp}
             label="Temperatures"
             onChange={hanldeTemp}
           >
-            {temps}
+            {aircon.range.modes[mode].temp.map((temp, index) => {
+              return (
+                <MenuItem key={index} value={temp}>
+                  {temp}
+                </MenuItem>
+              );
+            })}
           </Select>
         </Grid>
-      ) : null}
+      )}
 
-      {mode === "cool" || mode === "warm" || mode === "blow" ? (
+      {(mode === "cool" || mode === "warm" || mode === "blow") && (
         <Grid item xs={6}>
           <InputLabel id="volumes">Volume</InputLabel>
           <Select
             labelId="volumes"
             id="volumes"
-            value={volume}
+            value={settings.vol}
             label="Volumes"
             onChange={hanldeVolume}
           >
-            {volumes}
+            {aircon.range.modes[mode].vol.map((vol, index) => {
+              return (
+                <MenuItem key={index} value={vol}>
+                  {vol}
+                </MenuItem>
+              );
+            })}
           </Select>
         </Grid>
-      ) : null}
+      )}
     </>
   );
 }

@@ -40,9 +40,7 @@ export default function CardForm({ open, setOpen }: Props) {
           <Grid container spacing={{ xs: 1 }} columns={{ xs: 12 }}>
             {app.tv && <TVForm id={app.id} tv={app.tv} />}
             {app.light && <LightForm id={app.id} light={app.light} />}
-            {app.aircon && app.settings && (
-              <AirConForm aircon={app.aircon} settings={app.settings} />
-            )}
+            {app.aircon && app.settings && <AirConForm id={app.id} />}
             {app.signals && <IRForm signals={app.signals} />}
           </Grid>
         </DialogContent>
