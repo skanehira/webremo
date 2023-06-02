@@ -1,15 +1,15 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
-export interface LoadState {
+export interface Progress {
   loading: boolean;
 }
 
-const initialState: LoadState = {
+const initialState: Progress = {
   loading: false,
 };
 
-export const loadSlice = createSlice({
-  name: "load",
+export const progressSlice = createSlice({
+  name: "progress",
   initialState,
   reducers: {
     setLoading: (state, action: PayloadAction<boolean>) => {
@@ -18,5 +18,5 @@ export const loadSlice = createSlice({
   },
 });
 
-export const { setLoading } = loadSlice.actions;
-export default loadSlice.reducer;
+export const { setLoading } = progressSlice.actions;
+export default progressSlice.reducer;

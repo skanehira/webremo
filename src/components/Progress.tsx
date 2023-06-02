@@ -1,11 +1,11 @@
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
 import { useSelector } from "react-redux";
-import { LoadState } from "../stores/loader";
+import { Progress } from "../stores/progress";
 
 export default function Progress() {
-  const isLoading = useSelector<{ load: LoadState }, boolean>(
-    (state) => state.load.loading
+  const isLoading = useSelector<{ progress: Progress }, boolean>(
+    (state) => state.progress.loading
   );
 
   return (

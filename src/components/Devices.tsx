@@ -4,7 +4,7 @@ import CustomCard from "./CustomCard";
 import { useEffect, useRef } from "react";
 import { getDevices } from "../apis/device";
 import { useDispatch, useSelector } from "react-redux";
-import { setLoading } from "../stores/loader";
+import { setLoading } from "../stores/progress";
 import { DeviceState, selectDevice, setDevices } from "../stores/devices";
 
 export default function Devices() {

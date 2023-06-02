@@ -1,11 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import loadReducer from "./loader";
+import progressReducer from "./progress";
 import appReducer from "./apps";
 import deviceReducer from "./devices";
 
 export default configureStore({
   reducer: {
-    load: loadReducer,
+    progress: progressReducer,
     app: appReducer,
     device: deviceReducer,
   },
