@@ -81,7 +81,7 @@ async fn send_tv_button(State(_state): State<Arc<AppState>>, Path(id): Path<Stri
 }
 
 #[tokio::main]
-async fn main() {
+async fn main() -> anyhow::Result<()> {
     let cors = CorsLayer::new()
         .allow_origin(Any)
         .allow_methods([Method::GET, Method::POST])
@@ -102,8 +102,8 @@ async fn main() {
         }))
         .layer(cors);
 
-    axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
+    axum::Server::bind(&"0.0.0.0:3000".parse()?)
         .serve(app.into_make_service())
-        .await
-        .unwrap();
+        .await?;
+    Ok(())
 }
