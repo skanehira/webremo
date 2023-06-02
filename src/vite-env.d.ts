@@ -2,7 +2,6 @@
 
 interface ImportMetaEnv {
   readonly ENDPOINT: string
-  readonly TOKEN: string
 }
 
 interface ImportMeta {
