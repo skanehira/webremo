@@ -2,7 +2,7 @@ import { client } from "./client";
 import { type Appliance } from "nature-remo";
 
 export async function getAppliances(): Promise<Appliance[]> {
-  const resp = await client.get("appliances");
+  const resp = await client.fetch("appliances");
 
   if (resp.status !== 200) {
     throw new Error(await resp.text());

@@ -1,7 +1,7 @@
 import { client } from "./client";
 
 export async function sendButton(id: string, button: string) {
-  const form = new FormData();
+  const form = new URLSearchParams();
   form.set("button", button);
 
   const resp = await client.fetch(`appliances/${id}/tv`, {

@@ -10,8 +10,7 @@ type Props = {
 
 export default function TVForm({ id, tv }: Props) {
   const handleSendButton = useCallback(
-    (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-      const button = event.currentTarget.innerText;
+    (button: string) => {
       sendButton(id, button);
     },
     [id]
@@ -21,7 +20,12 @@ export default function TVForm({ id, tv }: Props) {
     <>
       {tv.buttons.map((button) => (
         <Grid item xs={6} key={button.name}>
-          <Button variant="contained" onClick={handleSendButton}>
+          <Button
+            variant="contained"
+            onClick={() => {
+              handleSendButton(button.name);
+            }}
+          >
             {button.name}
           </Button>
         </Grid>

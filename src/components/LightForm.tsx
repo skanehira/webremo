@@ -10,8 +10,7 @@ type Props = {
 
 export default function LightForm({ id, light }: Props) {
   const handleSendButton = useCallback(
-    (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-      const button = event.currentTarget.innerText;
+    (button: string) => {
       sendButton(id, button);
     },
     [id]
@@ -21,7 +20,12 @@ export default function LightForm({ id, light }: Props) {
     <>
       {light.buttons.map((button) => (
         <Grid item xs={6} key={button.name}>
-          <Button variant="contained" onClick={handleSendButton}>
+          <Button
+            variant="contained"
+            onClick={() => {
+              handleSendButton(button.name);
+            }}
+          >
             {button.name}
           </Button>
         </Grid>

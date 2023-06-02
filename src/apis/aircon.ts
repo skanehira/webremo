@@ -20,14 +20,14 @@ export async function updateAirconSettings(
   id: string,
   settings: UpdateAirconSettingsOptions
 ) {
-  const form = new FormData();
+  const params = new URLSearchParams();
   for (const [key, val] of Object.entries(settings)) {
-    form.set(key, val);
+    params.set(key, val);
   }
 
   const resp = await client.fetch(`appliances/${id}/aircon_settings`, {
     method: "POST",
-    body: form,
+    body: params,
   });
 
   if (resp.status !== 200) {

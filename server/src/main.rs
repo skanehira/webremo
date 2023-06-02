@@ -2,10 +2,11 @@ use axum::{
     extract::{Path, State},
     response::{IntoResponse, Response},
     routing::{get, post},
-    Json, Router,
+    Form, Json, Router,
 };
 use reqwest::{Method, StatusCode};
-use std::{println, sync::Arc};
+use serde::{Deserialize, Serialize};
+use std::sync::Arc;
 use tower_http::cors::{Any, CorsLayer};
 
 const ENDPOINT: &str = "https://api.nature.global";
@@ -36,6 +37,25 @@ struct AppState {
     token: String,
 }
 
+#[derive(Debug, Deserialize, Serialize)]
+pub struct UpdateAirconSettings {
+    pub button: String,
+    pub temperature: String,
+    pub operation_mode: String,
+    pub air_volume: String,
+    pub air_direction: String,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct UpdateTV {
+    pub button: String,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct UpdateLight {
+    pub button: String,
+}
+
 async fn appliances(
     State(state): State<Arc<AppState>>,
 ) -> Result<Json<serde_json::Value>, AppError> {
@@ -60,24 +80,66 @@ async fn devices(State(state): State<Arc<AppState>>) -> Result<Json<serde_json::
     Ok(Json(resp.json().await?))
 }
 
-// TODO
-async fn update_aricon_setteings(State(_state): State<Arc<AppState>>, Path(id): Path<String>) {
-    println!("{}", id);
+async fn update_aricon_setteings(
+    State(state): State<Arc<AppState>>,
+    Path(id): Path<String>,
+    Form(form): Form<UpdateAirconSettings>,
+) -> Result<Json<serde_json::Value>, AppError> {
+    let state = Arc::clone(&state);
+    let resp = state
+        .client
+        .post(ENDPOINT.to_string() + &format!("/1/appliances/{id}/aircon_settings"))
+        .bearer_auth(&state.token)
+        .form(&form)
+        .send()
+        .await?;
+    Ok(Json(resp.json().await?))
 }
 
-// TODO
-async fn send_light_button(State(_state): State<Arc<AppState>>, Path(id): Path<String>) {
-    println!("{}", id);
+async fn send_light_button(
+    State(state): State<Arc<AppState>>,
+    Path(id): Path<String>,
+    Form(form): Form<UpdateLight>,
+) -> Result<Json<serde_json::Value>, AppError> {
+    let state = Arc::clone(&state);
+    let resp = state
+        .client
+        .post(ENDPOINT.to_string() + &format!("/1/appliances/{id}/light"))
+        .bearer_auth(&state.token)
+        .form(&form)
+        .send()
+        .await?;
+    Ok(Json(resp.json().await?))
 }
 
-// TODO
-async fn send_signal(State(_state): State<Arc<AppState>>, Path(id): Path<String>) {
-    println!("{}", id);
+async fn send_tv_button(
+    State(state): State<Arc<AppState>>,
+    Path(id): Path<String>,
+    Form(form): Form<UpdateTV>,
+) -> Result<Json<serde_json::Value>, AppError> {
+    let state = Arc::clone(&state);
+    let resp = state
+        .client
+        .post(ENDPOINT.to_string() + &format!("/1/appliances/{id}/tv"))
+        .bearer_auth(&state.token)
+        .form(&form)
+        .send()
+        .await?;
+    Ok(Json(resp.json().await?))
 }
 
-// TODO
-async fn send_tv_button(State(_state): State<Arc<AppState>>, Path(id): Path<String>) {
-    println!("{}", id);
+async fn send_signal(
+    State(state): State<Arc<AppState>>,
+    Path(id): Path<String>,
+) -> Result<Json<serde_json::Value>, AppError> {
+    let state = Arc::clone(&state);
+    let resp = state
+        .client
+        .post(ENDPOINT.to_string() + &format!("/1/signals/{id}/send"))
+        .bearer_auth(&state.token)
+        .send()
+        .await?;
+    Ok(Json(resp.json().await?))
 }
 
 #[tokio::main]
