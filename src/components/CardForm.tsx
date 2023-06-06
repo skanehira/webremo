@@ -13,14 +13,15 @@ import IRForm from "./IRForm";
 import { Grid } from "@mui/material";
 
 type Props = {
+  id: string;
   open: boolean;
   setOpen: (open: boolean) => void;
 };
 
-export default function CardForm({ open, setOpen }: Props) {
+export default function CardForm({ id, open, setOpen }: Props) {
   const app = useSelector<{ app: AppState }, Appliance | undefined>((state) => {
-    if (state.app.selectedId) {
-      return state.app.apps.find((app) => app.id === state.app.selectedId);
+    if (id) {
+      return state.app.apps.find((app) => app.id === id);
     }
   });
 

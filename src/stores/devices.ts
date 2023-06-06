@@ -3,7 +3,6 @@ import { type Device } from "nature-remo";
 
 export interface DeviceState {
   devices: Device[];
-  selectedId?: string;
 }
 
 const initialState: DeviceState = {
@@ -17,14 +16,8 @@ export const deviceSlice = createSlice({
     setDevices: (state, action: PayloadAction<Device[]>) => {
       state.devices = action.payload;
     },
-    selectDevice: (state, action: PayloadAction<string>) => {
-      const app = state.devices.find((app) => app.id === action.payload);
-      if (app) {
-        state.selectedId = app.id;
-      }
-    },
   },
 });
 
-export const { setDevices, selectDevice } = deviceSlice.actions;
+export const { setDevices } = deviceSlice.actions;
 export default deviceSlice.reducer;

@@ -8,7 +8,6 @@ export type UpdateAirconPayload = {
 
 export interface AppState {
   apps: Appliance[];
-  selectedId?: string;
 }
 
 const initialState: AppState = {
@@ -22,12 +21,6 @@ export const appSlice = createSlice({
     setApps: (state, action: PayloadAction<Appliance[]>) => {
       state.apps = action.payload;
     },
-    selectApp: (state, action: PayloadAction<string>) => {
-      const app = state.apps.find((app) => app.id === action.payload);
-      if (app) {
-        state.selectedId = app.id;
-      }
-    },
     updateAirconSettings: (
       state,
       action: PayloadAction<UpdateAirconPayload>
@@ -38,5 +31,5 @@ export const appSlice = createSlice({
   },
 });
 
-export const { setApps, selectApp, updateAirconSettings } = appSlice.actions;
+export const { setApps, updateAirconSettings } = appSlice.actions;
 export default appSlice.reducer;

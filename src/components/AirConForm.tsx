@@ -21,9 +21,7 @@ export default function AirConForm({ id }: Props) {
   const dispatch = useDispatch();
 
   const app = useSelector<{ app: AppState }, Appliance | undefined>((state) => {
-    if (state.app.selectedId) {
-      return state.app.apps.find((app) => app.id === state.app.selectedId);
-    }
+    return state.app.apps.find((app) => app.id === id);
   });
 
   if (!app) {
