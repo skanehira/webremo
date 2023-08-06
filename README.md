@@ -7,17 +7,18 @@ Unofficial Web application for [Nature Remo](https://nature.global/nature-remo/)
 </p>
 
 ## Requirements
-- Rust
 - Node.js
   - pnpm
 
 ## Usage
 
 ```sh
+# create .env and add TOKEN
+$ echo "TOKEN=your_token" > .env
+
+# run proxy using nginx
+$ docker compose up
+
 # run dev server for front
 $ pnpm dev
-
-# run proxy server that written in Rust
-# Nature Remo API has CORS protection, so we should bypass request
-$ cargo run
 ```

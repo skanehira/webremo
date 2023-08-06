@@ -6,7 +6,7 @@ class Client {
   }
 
   fetch(path: string, init?: RequestInit) {
-    return fetch(`${this.endpoint}/${path}`, init);
+    return fetch(`${this.endpoint}/api/1/${path}`, init);
   }
 }
 
